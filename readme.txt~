@@ -1,0 +1,372 @@
+
+
+http://www.bayfronttechnologies.com/mc_tutorial.html
+
+James.Neighbors@BayfrontTechnologies.com
+
+
+Dear Mr. Neighbors,
+
+My name is Daniel Chapiesky. I would first like to thank you for introducing me to META II through your MetaCompiler Tutorial & Workshop.
+I have been working on something much like META II for the last 6 months (actually something closer to TREE META...). Your
+tutorial and description of META II bootstrapping to javascript has helped me enormously.
+
+Second, I would like to submit to you my port of the META II virtual machine to the C language. I used your javascript
+code in mc_semantics.html as a template and then went at a direct translation to C.  You will find attached to this
+email the fruits of 3 coffee filled nights of abandon. 
+
+In it's current form, the port is a proof of concept for executing the order codes as listed in the tutorial. 
+
+The port runs all of the examples of the tutorial correctly, save the ones which required the javascript intermediate
+compilers.
+
+The port compiles and runs on all *nix variants including (I have tested...) Ubuntu, Red Hat, openBSD, and Solaris (Windows
+didn't make the cut..)
+
+The attachment has a simple readme detailing the compilation and use of the ported vm. 
+
+If you find the port acceptable, you might add it as a footnote to your tutorial page. I suggest this, since I do not
+think it is large enough to warrant a sourceforge project page. Additionally, the C source code includes most of your example
+texts from the tutorial. 
+
+Once again, thank you for your work on META II and on metacompilers.
+
+Sincerely,
+
+Daniel Chapiesky (2011)
+dchapiesky2@gmail.com
+
+
+Interesting Note: 
+
+I actually wrote this email back in 2011 - I used it extensively for building dynamic test cases in a particular project.
+Back then I was excited about getting the VM back to you and was, shall I say... "stopped" from doing so....
+After some discussion about my posting the code to you, I was persuaded that the utility of what was created bordered on
+trade secret....
+
+At the time, we had access to things like lex & yacc & bison & antlr & this & that... and each of these was good
+for what it was good for (especially antlr) until you wanted to dynamically generate a DSL at runtime for one edge case
+which once executed would no longer be needed, etc.. etc.. etc... 
+
+Some of our team went off on a snipe hunt attempting to literally run a Java VM as a child process so antlr could do its
+magic and then - get this - use Clang to Just-In-Time compile the output of antlr - and then dynamically markup the JIT'd 
+code where-by the test case could shove data through the DSL to see what happened....
+
+I, being a bit of a lazy person, read ALL of your articles.... read all of the articles you referenced.... enjoyed people questioning
+me as to why a copy of "DEVELOPMENT OF A MULTIDISPLAY, TIME-SHARED COMPUTER FACILITY AND COMPUTER-AUGMENTED MANAGEMENT-SYSTEM RESEARCH"
+was on my desk... and finaly, over a weekend pounded out the above C version of the Meta-II VM.
+
+The version of the VM I eventually ended up with is jump-threaded and kicks butt. Other improvements were made over time, but in the end
+Meta-II became a DSL generating, mind altering, "oh... my.... God...." tool.
+
+During a recent code review, I brought up that I would still like to submit the original VM to you and it was decided that anyone smart enough
+to *see* what we are doing from publically available DSL descriptions would be able to come up with what we have as well.  The thing that we
+all had a good a laugh about was contemplating their attempt to replicate what we are doing *without* Meta-II.
+
+So, here, in 2015 I can finally send my original VM to you.
+
+MetaII fried a few minds along the way, but man I love it.
+
+Thanks again!
+
+Daniel (2015)
+
+---------------------------------------------------------
+
+
+To Compile:
+------------------------
+
+	cc metaII_vm.c
+
+
+To Run:
+------------------------
+
+	./a.out
+
+usage: ./a.out [-i #] [-c #] 
+-i #		specify example input text index from mc_workshop (i01..i0X)
+-c #		specify example code index from mc_workshop       (c01..i0X)
+-v  		verbose mode
+-l  		list example input and code indexes
+
+
+To list examples:
+------------------------
+
+	./a.out -l
+
+Available Input Texts Are:
+	0	i01. demo, AEXP example assignments
+	1	i02. demo, AEXP example assignment compiler
+	2	i03. Meta II syntax (paper fig. 5)
+	3	i04. Meta II syntax (i03 reordered)
+	4	i05. add semicolon line end
+	5	i06. use semicolon line end
+	6	i07. add new output control
+	7	i08. delete old output control
+	8	i09. use new output control
+	9	i10. convert i09 to js functions
+	10	i11. add token rules to i09
+	11	i11jf. add token rules to i10
+	12	i12. use token rules
+	13	i12jf. use token rules
+	14	i13. add comments and litchr to i12
+	15	i13jf. add comments and litchr to i12jf
+	16	i14. use comments and litchr
+	17	i14jf. use comments and litchr
+	18	i14js. convert i14jf to js object
+	19	i02a. demo, AEXP example assignment compiler
+	20	i01a. demo, AEXP2 backup value assignments
+	21	i15js. js metacompiler with backup
+	22	i02b. demo, AEXP2 backup assignment compiler
+	23	i04a. Meta II syntax (i03 reordered and tokens)
+
+
+Available Codes Are:
+	0	c00. demo, compiled assignments c[i01,c01] 
+	1	c01. demo, AEXP assignments compiler c[i02,c02] 
+	2	c02. Meta II of fig. 5, m[i03,c02]
+	3	c03. Meta II reordered, c[i04,c02], m[i04,c03]
+	4	c04. Meta II semicolons, c[i05,c03], m[i06,c04]
+	5	c05. accept new output, c[i07,c04], m[i07,c05]
+	6	c06. reject old output, c[i08,c05]
+	7	c07. use new output, c[i09,c06], m[i09,c07]
+	8	c08. compile to js functions, c[i10,c07]
+	9	c09. accept tokens, c[i11,c07]
+	10	c10. use tokens, c[i12,c09], m[i12,c10]
+	11	c11. accept comments, c[i13,c10]
+	12	c12. use comments, c[i14,c11], m[i14,c12]
+
+
+
+Test Run:
+------------------------
+
+	./a.out -i 2 -c 2
+
+
+	ADR PROGRAM
+OUT1
+	TST '*1'
+	BF L1
+	CL 'GN1'
+	OUT
+L1
+	BT L2
+	TST '*2'
+	BF L3
+	CL 'GN2'
+	OUT
+L3
+	BT L2
+	TST '*'
+	BF L4
+	CL 'CI'
+	OUT
+L4
+	BT L2
+	SR
+	BF L5
+	CL 'CL '
+	CI
+	OUT
+L5
+L2
+	R
+OUTPUT
+	TST '.OUT'
+	BF L6
+	TST '('
+	BE
+L7
+	CLL OUT1
+	BT L7
+	SET
+	BE
+	TST ')'
+	BE
+L6
+	BT L8
+	TST '.LABEL'
+	BF L9
+	CL 'LB'
+	OUT
+	CLL OUT1
+	BE
+L9
+L8
+	BF L10
+	CL 'OUT'
+	OUT
+L10
+L11
+	R
+EX3
+	ID
+	BF L12
+	CL 'CLL '
+	CI
+	OUT
+L12
+	BT L13
+	SR
+	BF L14
+	CL 'TST '
+	CI
+	OUT
+L14
+	BT L13
+	TST '.ID'
+	BF L15
+	CL 'ID'
+	OUT
+L15
+	BT L13
+	TST '.NUMBER'
+	BF L16
+	CL 'NUM'
+	OUT
+L16
+	BT L13
+	TST '.STRING'
+	BF L17
+	CL 'SR'
+	OUT
+L17
+	BT L13
+	TST '('
+	BF L18
+	CLL EX1
+	BE
+	TST ')'
+	BE
+L18
+	BT L13
+	TST '.EMPTY'
+	BF L19
+	CL 'SET'
+	OUT
+L19
+	BT L13
+	TST '$'
+	BF L20
+	LB
+	GN1
+	OUT
+	CLL EX3
+	BE
+	CL 'BT '
+	GN1
+	OUT
+	CL 'SET'
+	OUT
+L20
+L13
+	R
+EX2
+	CLL EX3
+	BF L21
+	CL 'BF '
+	GN1
+	OUT
+L21
+	BT L22
+	CLL OUTPUT
+	BF L23
+L23
+L22
+	BF L24
+L25
+	CLL EX3
+	BF L26
+	CL 'BE'
+	OUT
+L26
+	BT L27
+	CLL OUTPUT
+	BF L28
+L28
+L27
+	BT L25
+	SET
+	BE
+	LB
+	GN1
+	OUT
+L24
+L29
+	R
+EX1
+	CLL EX2
+	BF L30
+L31
+	TST '/'
+	BF L32
+	CL 'BT '
+	GN1
+	OUT
+	CLL EX2
+	BE
+L32
+L33
+	BT L31
+	SET
+	BE
+	LB
+	GN1
+	OUT
+L30
+L34
+	R
+ST
+	ID
+	BF L35
+	LB
+	CI
+	OUT
+	TST '='
+	BE
+	CLL EX1
+	BE
+	TST '.,'
+	BE
+	CL 'R'
+	OUT
+L35
+L36
+	R
+PROGRAM
+	TST '.SYNTAX'
+	BF L37
+	ID
+	BE
+	CL 'ADR '
+	CI
+	OUT
+L38
+	CLL ST
+	BT L38
+	SET
+	BE
+	TST '.END'
+	BE
+	CL 'END'
+	OUT
+L37
+L39
+	R
+	END
+
+
+
+
+
+
+
+
+
+
+
+
